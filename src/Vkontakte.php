@@ -293,7 +293,7 @@ class Vkontakte
         if (count($query) > 0) {
             $q .= '&'; // Add "&" sign for access_token if query exists
         }
-        $url = 'https://api.vk.com/method/' . $method . '?' . $q . 'access_token=' . $this->accessToken->access_token;
+        $url = 'https://api.vk.com/method/' . $method . '?' . $q . 'access_token=' . $this->accessToken->access_token . '&v=5.103';
         $result = json_decode($this->curl($url));
 
         if (isset($result->response)) {
@@ -362,11 +362,12 @@ class Vkontakte
               public 'mid' => int 76989657
          *
          *  */
-
+        
         $uploadURL = $response->upload_url;
         $output = [];
         exec("curl -X POST -F 'photo=@$fullServerPathToImage' '$uploadURL'", $output);
         $response = json_decode($output[0]);
+        
         /*
          *  public 'server' => int 618028
               public 'photo' => string '[{"photo":"96df595e0b:z","sizes":[["s","618028657","c5b1","RfjznPPyhxs",75,54],["m","618028657","c5b2","dQRTijvf4tE",130,93],["x","618028657","c5b3","-zUzUi-uOkU",604,432],["y","618028657","c5b4","FAAY0vnMSWc",807,577],["z","618028657","c5b5","OBZqwGjlO9s",900,644],["o","618028657","c5b6","Ku7Q6IqN5uc",130,93],["p","618028657","c5b7","0eFhSRrjxvU",200,143],["q","618028657","c5b8","F8E6QJg51o4",320,229],["r","618028657","c5b9","-a3oiI8SVOg",510,365]],"kid":"6bba9104fa05dd017597abce3ebeb215"}]' (length=496)
@@ -380,6 +381,9 @@ class Vkontakte
             'server' => $response->server,
             'hash' => $response->hash,
         ]);
+        var_dump($response);
+
+
         /*
  *
  * array (size=1)
@@ -414,7 +418,8 @@ public 'created' => int 1402950212
                 'owner_id' => -$publicID,
                 'from_group' => 1,
                 'message' => "$text",
-                'attachments' => "{$response[0]->id}", // uploaded image is passed as attachment
+                'attachments' => "photo{$response[0]->owner_id}_{$response[0]->id}", // uploaded image is passed as attachment     
+//'attachments' => "{$response[0]->id}", // uploaded image is passed as attachment
 
 
             ]);
